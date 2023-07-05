@@ -4,7 +4,6 @@ import org.pahappa.systems.ticketing.models.Ticket;
 import org.pahappa.systems.ticketing.services.TicketService;
 import org.pahappa.systems.ticketing.services.impl.TicketServiceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -68,6 +67,8 @@ public class TicketView implements BaseTicketView {
         }
     }
 
+    TicketServiceImpl objService = new TicketServiceImpl();
+
     @Override
     public void createTicket() {
         Ticket obj = new Ticket();
@@ -85,7 +86,6 @@ public class TicketView implements BaseTicketView {
         Ticket ticket = new Ticket(obj.Category, obj.Description, obj.PriorityLevel);
 
         // Add the user to the list
-        TicketServiceImpl objService = new TicketServiceImpl();
 
         objService.createTicket(ticket);
 
@@ -93,7 +93,20 @@ public class TicketView implements BaseTicketView {
 
     @Override
     public void getAllTickets() {
+        List<Ticket> tickets = objService.getAllTickets();
+        int size = tickets.size();
+        if (size > 0) {
+            // Display the tickets to the user
 
+            for (Ticket ticket : tickets) {
+
+                System.out.println("Ticket Category: " + ticket.Category + " Ticket Description: " + ticket.Description
+                        + "Ticket Priority Level: " + ticket.PriorityLevel);
+                System.out.println();
+            }
+        } else {
+            System.out.println("\nNo Tickets Found");
+        }
     }
 
     @Override

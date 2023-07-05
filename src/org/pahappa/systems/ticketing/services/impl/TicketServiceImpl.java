@@ -9,15 +9,17 @@ import java.util.List;
 
 public class TicketServiceImpl implements TicketService {
 
+    List<Ticket> ticketList = new ArrayList<>();
+
     @Override
     public void createTicket(Ticket ticket) {
-        List<Ticket> ticketList = new ArrayList<>();
+
         ticketList.add(ticket);
     }
 
     @Override
     public List<Ticket> getAllTickets() {
-        return null;
+        return ticketList;
     }
 
     @Override
