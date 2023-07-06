@@ -7,7 +7,7 @@ public class Ticketing {
     public static void main(String[] args) {
         TicketView ticketView = new TicketView();
         ticketView.displayMenu();
-        System.out.println("Trying out git");
+        System.out.println("\nThanks for using our services");
     }
-    
-    }
+
+}

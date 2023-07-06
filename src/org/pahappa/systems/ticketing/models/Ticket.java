@@ -11,24 +11,24 @@ import org.pahappa.systems.ticketing.constants.TicketStatus;
  * related to the user's request or issue.
  */
 public class Ticket {
-    public String Client;
-    public String Contact;
-    public String Category;
-    public String Description;
+    public String client;
+    public String contact;
+    public String category;
+    public String description;
     public TicketStatus status;
-    public String PriorityLevel;
+    public String priorityLevel;
 
     public Ticket() {
     }
 
     public Ticket(String client, String contact, String category, String description, String priorityLevel,
             TicketStatus stat) {
-        Client = client;
-        Contact = contact;
-        Category = category;
-        Description = description;
-        PriorityLevel = priorityLevel;
-        status = stat;
+        this.client = client;
+        this.contact = contact;
+        this.category = category;
+        this.description = description;
+        this.priorityLevel = priorityLevel;
+        this.status = stat;
     }
 
 }
