@@ -7,7 +7,6 @@ import org.pahappa.systems.ticketing.services.impl.TicketServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,13 +29,13 @@ public class TicketView implements BaseTicketView {
         while (running && (attempt < maxAttempts)) {
 
             try {
-                System.out.println("\nChoose an operation:");
-                System.out.println("\n1. Create Ticket");
-                System.out.println("\n2. Get All Tickets");
-                System.out.println("\n3. Get Tickets of Status");
-                System.out.println("\n4. Update Ticket");
-                System.out.println("\n5. Delete Ticket");
-                System.out.println("\n6. Exit");
+                System.out.println("Choose an operation:");
+                System.out.println("1. Create Ticket");
+                System.out.println("2. Get All Tickets");
+                System.out.println("3. Get Tickets of Status");
+                System.out.println("4. Update Ticket");
+                System.out.println("5. Delete Ticket");
+                System.out.println("6. Exit");
                 System.out.println();
 
                 int choice = scanner.nextInt();
@@ -170,6 +169,7 @@ public class TicketView implements BaseTicketView {
 
             // Add the user to the list
             ticketService.createTicket(ticket);
+            System.out.println("\nNew ticket created successfully!");
         }
 
     }
@@ -180,15 +180,16 @@ public class TicketView implements BaseTicketView {
         int size = tickets.size();
         if (size > 0) {
             // Display the tickets to the user
-
+            System.out.println("\n List of all tickets in the DB: ");
+            int i = 0;
             for (Ticket ticket : tickets) {
 
-                System.out.println(
-                        "Client's Name: " + ticket.getClient() + " Contact: " + ticket.getContact()
-                                + " Ticket Category: "
-                                + ticket.getCategory() + " Ticket Description: " + ticket.getDescription()
-                                + " Ticket Priority Level: " + ticket.getPriorityLevel() + " Status: "
-                                + ticket.getStatus());
+                System.out.println("Index: " + (++i) +
+                        ", Client's Name: " + ticket.getClient() + ", Contact: " + ticket.getContact()
+                        + ", Ticket Category: "
+                        + ticket.getCategory() + ", Ticket Description: " + ticket.getDescription()
+                        + ", Ticket Priority Level: " + ticket.getPriorityLevel() + ", Status: "
+                        + ticket.getStatus());
                 System.out.println();
             }
         } else {
@@ -232,15 +233,15 @@ public class TicketView implements BaseTicketView {
             int size = ticketsorted.size();
             if (size > 0) {
                 // Display the tickets to the user
-
+                int i = 0;
                 for (Ticket ticket : ticketsorted) {
 
-                    System.out.println(
-                            "Client's Name: " + ticket.getClient() + " Contact: " + ticket.getContact()
-                                    + " Ticket Category: "
-                                    + ticket.getCategory() + " Ticket Description: " + ticket.getDescription()
-                                    + " Ticket Priority Level: " + ticket.getPriorityLevel() + " Status: "
-                                    + ticket.getStatus());
+                    System.out.println("Index: " + (++i) +
+                            ", Client's Name: " + ticket.getClient() + ", Contact: " + ticket.getContact()
+                            + ", Ticket Category: "
+                            + ticket.getCategory() + ", Ticket Description: " + ticket.getDescription()
+                            + ", Ticket Priority Level: " + ticket.getPriorityLevel() + ", Status: "
+                            + ticket.getStatus());
                     System.out.println();
                 }
             } else {
@@ -253,11 +254,94 @@ public class TicketView implements BaseTicketView {
 
     @Override
     public void updateTicket() {
+        List<Ticket> ticketSelected = ticketService.getAllTickets();
+        int trials = 0;
+        int maxTrials = 3;
+        if (ticketSelected.size() > 0) {
+            // Display the tickets to the user
+            System.out.println("\n List of all tickets: ");
+            int i = 0;
+            for (Ticket tickets : ticketSelected) {
+
+                System.out.println("Index: " + (++i) +
+                        ", Client's Name: " + tickets.getClient() + ", Contact: " + tickets.getContact()
+                        + ", Ticket Category: "
+                        + tickets.getCategory() + ", Ticket Description: " + tickets.getDescription()
+                        + ", Ticket Priority Level: " + tickets.getPriorityLevel() + ", Status: "
+                        + tickets.getStatus());
+                System.out.println();
+            }
+            while (trials < maxTrials) {
+
+                System.out.println("Enter the index of the ticket you want to update: ");
+                String index = scanner.nextLine();
+
+                if (index.matches("\\d+")) {
+                    int option = Integer.parseInt(index);
+                    if ((option > 0) && (option < (ticketSelected.size() + 1))) {
+                        ticketService.updateTicket(ticketSelected.get(option - 1));
+                        System.out.println("Ticket updated successfully..");
+                        // validchoice = true;
+                        break;
+                    } else {
+                        System.out.println("Invalid input.");
+                    }
+                } else {
+                    System.out.println("\nInvalid Input! Please enter a valid integer.");
+                }
+                trials++;
+            }
+        } else {
+            // no tickets stored
+            System.out.println("\nNo Tickets Available to update.!");
+        }
 
     }
 
     @Override
     public void deleteTicket() {
+        List<Ticket> ticket = ticketService.getAllTickets();
+        int trials = 0;
+        int maxTrials = 3;
+        if (ticket.size() > 0) {
+            // Display the tickets to the user
+            System.out.println("\n List of all tickets: ");
+            int i = 0;
+            for (Ticket tickets : ticket) {
+
+                System.out.println("Index: " + (++i) +
+                        ", Client's Name: " + tickets.getClient() + ", Contact: " + tickets.getContact()
+                        + ", Ticket Category: "
+                        + tickets.getCategory() + ", Ticket Description: " + tickets.getDescription()
+                        + ", Ticket Priority Level: " + tickets.getPriorityLevel() + ", Status: "
+                        + tickets.getStatus());
+                System.out.println();
+            }
+
+            while (trials < maxTrials) {
+
+                System.out.println("Enter the index of the ticket you want to delete: ");
+                String index = scanner.nextLine();
+
+                if (index.matches("\\d+")) {
+                    int option = Integer.parseInt(index);
+                    if ((option > 0) && (option < (ticket.size() + 1))) {
+                        ticketService.deleteTicket(option - 1);
+                        System.out.println("Ticket deleted successfully..");
+                        // validchoice = true;
+                        break;
+                    } else {
+                        System.out.println("Invalid input.");
+                    }
+                } else {
+                    System.out.println("\nInvalid Input! Please enter a valid integer.");
+                }
+                trials++;
+            }
+        } else {
+            // no tickets stored
+            System.out.println("\nNo Tickets Available..!");
+        }
 
     }
 }
