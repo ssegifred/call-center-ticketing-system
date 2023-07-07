@@ -7,6 +7,7 @@ import org.pahappa.systems.ticketing.services.impl.TicketServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -79,14 +80,14 @@ public class TicketView implements BaseTicketView {
         Ticket obj = new Ticket();
         // Prompt the user for input
         System.out.print("\nEnter the Client's Name: ");
-        obj.client = scanner.nextLine();
+        obj.setClient(scanner.nextLine());
         System.out.print("\nEnter Client's Contact: ");
-        obj.contact = scanner.nextLine();
+        obj.setContact(scanner.nextLine());
         System.out.print("\nEnter Ticket Category: ");
-        obj.category = scanner.nextLine();
+        obj.setCategory(scanner.nextLine());
 
         System.out.print("\nEnter Ticket Description: ");
-        obj.description = scanner.nextLine();
+        obj.setDescription(scanner.nextLine());
 
         System.out.print("\nChoose Ticket priority Level ");
         List<String> priority = new ArrayList<>(Arrays.asList("Low", "Medium", "High"));
@@ -107,7 +108,7 @@ public class TicketView implements BaseTicketView {
                 int num = Integer.parseInt(initial);
 
                 if (num >= 1 && num <= priority.size()) {
-                    obj.priorityLevel = priority.get(num - 1);
+                    obj.setPriorityLevel(priority.get(num - 1));
                     validInput = true;
                     break;
                 } else {
@@ -144,7 +145,7 @@ public class TicketView implements BaseTicketView {
 
                 if (num >= 1 && num <= TicketStatus.values().length) {
                     TicketStatus stat = TicketStatus.values()[num - 1];
-                    obj.status = stat;
+                    obj.setStatus(stat);
                     validInput = true;
 
                     break;
@@ -163,8 +164,9 @@ public class TicketView implements BaseTicketView {
             return;
         } else {
             // Create a new User object with the captured information
-            Ticket ticket = new Ticket(obj.client, obj.contact, obj.category, obj.description, obj.priorityLevel,
-                    obj.status);
+            Ticket ticket = new Ticket(obj.getClient(), obj.getContact(), obj.getCategory(), obj.getDescription(),
+                    obj.getPriorityLevel(),
+                    obj.getStatus());
 
             // Add the user to the list
             ticketService.createTicket(ticket);
@@ -182,9 +184,11 @@ public class TicketView implements BaseTicketView {
             for (Ticket ticket : tickets) {
 
                 System.out.println(
-                        "Client's Name: " + ticket.client + " Contact: " + ticket.contact + " Ticket Category: "
-                                + ticket.category + " Ticket Description: " + ticket.description
-                                + " Ticket Priority Level: " + ticket.priorityLevel + " Status: " + ticket.status);
+                        "Client's Name: " + ticket.getClient() + " Contact: " + ticket.getContact()
+                                + " Ticket Category: "
+                                + ticket.getCategory() + " Ticket Description: " + ticket.getDescription()
+                                + " Ticket Priority Level: " + ticket.getPriorityLevel() + " Status: "
+                                + ticket.getStatus());
                 System.out.println();
             }
         } else {
@@ -195,7 +199,56 @@ public class TicketView implements BaseTicketView {
 
     @Override
     public void getTicketsOfStatus() {
+        List<Ticket> ticketsorted = null;
 
+        String statusChoice;
+        boolean validchoice = false;
+        int trials = 0;
+        int maxTrials = 3;
+        while (trials < maxTrials) {
+
+            System.out.println("Choose the status:");
+            for (int j = 0; j < TicketStatus.values().length; j++) {
+                System.out.println((j + 1) + ". " + TicketStatus.values()[j]);
+            }
+            System.out.print("Enter your choice: ");
+            statusChoice = scanner.nextLine();
+            if (statusChoice.matches("\\d+")) {
+                int option = Integer.parseInt(statusChoice);
+                if (option >= 1 && option <= TicketStatus.values().length) {
+                    TicketStatus stat = TicketStatus.values()[option - 1];
+                    ticketsorted = ticketService.getTicketsOfStatus(stat);
+                    validchoice = true;
+                    break;
+                } else {
+                    System.out.println("Invalid input.");
+                }
+            } else {
+                System.out.println("\nInvalid Input! Please enter a valid integer.");
+            }
+            trials++;
+        }
+        if (validchoice) {
+            int size = ticketsorted.size();
+            if (size > 0) {
+                // Display the tickets to the user
+
+                for (Ticket ticket : ticketsorted) {
+
+                    System.out.println(
+                            "Client's Name: " + ticket.getClient() + " Contact: " + ticket.getContact()
+                                    + " Ticket Category: "
+                                    + ticket.getCategory() + " Ticket Description: " + ticket.getDescription()
+                                    + " Ticket Priority Level: " + ticket.getPriorityLevel() + " Status: "
+                                    + ticket.getStatus());
+                    System.out.println();
+                }
+            } else {
+                // no tickets stored
+                System.out.println("\nNo Available Tickets  of that Category..!");
+            }
+
+        }
     }
 
     @Override
